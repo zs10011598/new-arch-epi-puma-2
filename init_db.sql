@@ -83,6 +83,20 @@ CREATE INDEX idx_summary_ensemble_ind_variable_id ON ep2_2_schema.summary_ensemb
 create table ep2_2_schema.summary_ensemble_16k(variable_id bigint, cells integer[], occs integer);
 CREATE INDEX idx_summary_ensemble_16k_variable_id ON ep2_2_schema.summary_ensemble_16k(variable_id);
 
+CREATE OR REPLACE FUNCTION get_epsilon(double precision, integer, integer, integer, integer)
+  RETURNS double precision
+  LANGUAGE sql
+  AS $function$
+    SELECT $2*(((cast($3 as float)+($1/2))/(cast($2 as float)+$1))-((cast($4 as float)+$1)/(cast($5 as float)+(2*$1))))/(|/($2)*((cast($4 as float)+$1)/(cast($5 as float)+2*$1))*(1-((cast($4 as float)+$1)/(cast($5 as float)+(2*$1)))));
+  $function$;
+
+  CREATE OR REPLACE FUNCTION public.get_score(double precision, integer, integer, integer, integer)
+  RETURNS double precision
+  LANGUAGE sql
+    AS $function$
+      SELECT ((cast($3 as float)+($1/2))/(cast($4 as float)+$1))/(((cast($2 as float)-cast($3 as float))+($1/2))/((cast($5 as float)-cast($4 as float))+$1));
+    $function$;
+
 \c ep2_1
 create extension postgres_fdw;
 CREATE EXTENSION IF NOT EXISTS intarray;
@@ -92,7 +106,7 @@ create schema ep2_2_schema;
 IMPORT FOREIGN SCHEMA ep2_2_schema FROM SERVER ep2_2_server INTO ep2_2_schema;
 CREATE SERVER ep2_3_server FOREIGN DATA WRAPPER postgres_fdw OPTIONS (host '127.0.0.1', dbname 'ep2_3', port '5433');
 CREATE USER MAPPING FOR postgres SERVER ep2_3_server OPTIONS (user 'postgres', password 'postgres');
-create schema ep2_3_schema;
+
 
 
 --CREATE FOREIGN TABLE test_table_2 (id serial, att_2 varchar(20)) SERVER ep2_2_server;

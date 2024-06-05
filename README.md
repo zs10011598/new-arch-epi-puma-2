@@ -16,11 +16,11 @@ Esta nueva propuesta, en escencia es, una base de datos federada con un solo gat
 Este es el orden en el que se tienen que correr los archivos
 
     - Crear las bases de datos con el scrip sql `init_db.sql`
-    - Asegurarse de que exista el directorio `species_data` y que contenga un archivo `.csv` del SNIB, descargar de [https://snib.mx/].
+    - Asegurarse de que exista el directorio `species_data` y que contenga un archivo `.zip` del SNIB, descargar de https://snib.mx/.
     - Correr notebook de Jupyter `build_db.ipynb` o `build_db.py`.
     - Crear la base de datos `ep2_3` copiando `ep2_2`, en la consola interactiva de `PostgreSQL`, tecleado `CREATE DATABASE ep2_3 FROM TEMPLATE ep2_2`.
     - Conectarse a la base de datos `ep2_3` con el comando `\c ep2_3`.
-    - Renombrar el esquema con `ALTER SCHEMA ep2_2_schema RENAME ep2_3_schema`.
+    - Renombrar el esquema con `ALTER SCHEMA ep2_2_schema RENAME TO ep2_3_schema`.
     - Conectarse a la base de datos `ep2_1`.
     - Importar el esquema `ep2_3_schema` con el comando `IMPORT FOREIGN SCHEMA ep2_3_schema FROM SERVER ep2_3_server INTO ep2_3_schema;`.
     - Correr las celdas del notebook de Jupyter `compute_analysis.ipynb`.
